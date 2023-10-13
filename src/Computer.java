@@ -2,7 +2,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Computer {
-    //Randomiserad läggninga av symbol computer
+    //Randomiserad funktion med random läggninga av symbol computer
     public int makeMove(List<Integer> playerPositions, List<Integer> computerPositions) {
         int pos;
         Random rand = new Random();

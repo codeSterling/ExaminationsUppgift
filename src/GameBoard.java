@@ -35,7 +35,7 @@ public class GameBoard {
             System.out.println();
         }
     }
-
+    // Lägger till symbolerna för respektive spelare
     public void placePiece(int pos, String user) {
         char symbol = ' ';
 

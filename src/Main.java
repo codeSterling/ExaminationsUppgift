@@ -10,9 +10,6 @@ public class Main {
     //Räknare för antal drag
     static int totalMoves = 0;
 
-    GameBoard gameBoard = new GameBoard(playerPositions1, playerPositions2);
-
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean playAgain = true; // Boolean för att kontrollera om spelet ska spelas igen
@@ -29,7 +26,7 @@ public class Main {
                     }
                 } else {
                     System.out.println("Invalid input. Please enter 1 for multiplayer or 2 to play against the computer.");
-                    scanner.next(); // Rensa inmatningsbufferten för att undvika en oändlig loop
+                    scanner.next();
                 }
             }
 
@@ -83,22 +80,29 @@ public class Main {
             while (!gameOver) {
                 // Spelarens tur
                 if (player1Turn) {
-                    int playerPos1;
+                    int playerPos1 = 0;
+                    boolean validInput = false;
                     do {
-                        System.out.print(player1.getPlayerName() + ", enter your placement (1-9): ");
-                        playerPos1 = scanner.nextInt();
+                        try {
+                            System.out.print(player1.getPlayerName() + ", enter your placement (1-9): ");
+                            playerPos1 = scanner.nextInt();
 
-                        if (playerPos1 < 1 || playerPos1 > 9) {
-                            System.out.println("Unavailable input. Pick a number between 1-9.");
-                        } else if (isPositionTaken(playerPos1, playerPositions1, playerPositions2)) {
-                            System.out.println("Position taken, pick another.");
+                            if (playerPos1 < 1 || playerPos1 > 9) {
+                                System.out.println("Invalid input. Please pick a number between 1 and 9.");
+                            } else if (isPositionTaken(playerPos1, playerPositions1, playerPositions2)) {
+                                System.out.println("Position taken, pick another.");
+                            } else {
+                                validInput = true;
+                            }
+                        } catch (java.util.InputMismatchException e) {
+                            System.out.println("Invalid input. Please enter a valid number.");
+                            scanner.next();
                         }
-                    } while (playerPos1 < 1 || playerPos1 > 9 || isPositionTaken(playerPos1, playerPositions1, playerPositions2));
+                    } while (!validInput || playerPos1 < 1 || playerPos1 > 9 || isPositionTaken(playerPos1, playerPositions1, playerPositions2));
 
                     gameBoard.placePiece(playerPos1, "Player 1");
                     playerPositions1.add(playerPos1);
                     totalMoves++;
-
                 }
                 // Datorns tur
                 else {
@@ -170,18 +174,25 @@ public class Main {
             Scanner scan = new Scanner(System.in);
 
             //player 1 se till så att man lägger symbol vid ledig position
-            int playerPos1;
+            int playerPos1 = 0;
+            boolean validInput = false;
             do {
-                System.out.print(playerName1 + " enter your placement (1-9): ");
-                playerPos1 = scan.nextInt();
+                try {
+                    System.out.print(player1.getPlayerName() + ", enter your placement (1-9): ");
+                    playerPos1 = scanner.nextInt();
 
-                if (playerPos1 < 1 || playerPos1 > 9) {
-                    System.out.println("Unavaible input. Pick a number between 1-9.");
-                } else if (isPositionTaken(playerPos1, playerPositions1, playerPositions2)) {
-                    System.out.println("Position taken, pick another.");
+                    if (playerPos1 < 1 || playerPos1 > 9) {
+                        System.out.println("Invalid input. Please pick a number between 1 and 9.");
+                    } else if (isPositionTaken(playerPos1, playerPositions1, playerPositions2)) {
+                        System.out.println("Position taken, pick another.");
+                    } else {
+                        validInput = true;
+                    }
+                } catch (java.util.InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a valid number.");
+                    scanner.next();  // Clear the invalid input from the scanner
                 }
-            } while (playerPos1 < 1 || playerPos1 > 9 || isPositionTaken(playerPos1, playerPositions1, playerPositions2));
-
+            } while (!validInput || playerPos1 < 1 || playerPos1 > 9 || isPositionTaken(playerPos1, playerPositions1, playerPositions2));
 
             gameBoard.placePiece(playerPos1, "Player 1");
             playerPositions1.add(playerPos1);
@@ -206,18 +217,26 @@ public class Main {
                 break;
             }
 
-            //player 2 se till så att man lägger symbol vid ledig position
-            int playerPos2;
+            //player 2 se till så att man lägger symbol, vid ledig position och valid input
+            int playerPos2 = 0;
+            boolean validInput2 = false;
             do {
-                System.out.print(playerName2 + " enter your placement (1-9): ");
-                playerPos2 = scan.nextInt();
+                try {
+                    System.out.print(playerName2 + ", enter your placement (1-9): ");
+                    playerPos2 = scan.nextInt();
 
-                if (playerPos2 < 1 || playerPos2 > 9) {
-                    System.out.println("Unavaible input. Picka number between 1-9.");
-                } else if (isPositionTaken(playerPos2, playerPositions2, playerPositions1)) {
-                    System.out.println("Position taken, pick another.");
+                    if (playerPos2 < 1 || playerPos2 > 9) {
+                        System.out.println("Invalid input. Please pick a number between 1 and 9.");
+                    } else if (isPositionTaken(playerPos2, playerPositions2, playerPositions1)) {
+                        System.out.println("Position taken, pick another.");
+                    } else {
+                        validInput2 = true;
+                    }
+                } catch (java.util.InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a valid number.");
+                    scan.next();  // Clear the invalid input from the scanner
                 }
-            } while (playerPos2 < 1 || playerPos2 > 9 || isPositionTaken(playerPos2, playerPositions2, playerPositions1));
+            } while (!validInput2 || playerPos2 < 1 || playerPos2 > 9 || isPositionTaken(playerPos2, playerPositions2, playerPositions1));
 
             gameBoard.placePiece(playerPos2, "Player 2");
             playerPositions2.add(playerPos2);
