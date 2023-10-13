@@ -14,9 +14,8 @@ public class Main {
 
 
     public static void main(String[] args) {
-        //Ange sitt namn
         Scanner scanner = new Scanner(System.in);
-        boolean playAgain = true; // Variabel för att kontrollera om spelet ska spelas igen
+        boolean playAgain = true; // Boolean för att kontrollera om spelet ska spelas igen
         GameBoard gameBoard = new GameBoard();
         //Loop för hantering av spelläge och interface hantering
         while (playAgain) {
@@ -43,7 +42,14 @@ public class Main {
             System.out.println("Do you want to play again? (yes/no)");
             String playAgainInput = scanner.next().toLowerCase();
 
-            playAgain = playAgainInput.equals("yes");
+            while (!playAgainInput.equals("yes") && !playAgainInput.equals("no")) {
+                System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+                playAgainInput = scanner.next().toLowerCase();
+            }
+
+            if (playAgainInput.equals("no")) {
+                playAgain = false;
+            }
         }
 
         System.out.println("Thank you for playing! Bye.");
