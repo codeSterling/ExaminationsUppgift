@@ -80,6 +80,7 @@ public class GameBoard {
                 break;
         }
     }
+    //Rensar spelplan
     public void clearBoard() {
         board = new char[][]{
                 {' ', '|', ' ', '|', ' '},

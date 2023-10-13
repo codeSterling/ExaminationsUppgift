@@ -18,7 +18,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         boolean playAgain = true; // Variabel för att kontrollera om spelet ska spelas igen
         GameBoard gameBoard = new GameBoard();
-
+        //Loop för hantering av spelläge och interface hantering
         while (playAgain) {
             int gameMode = 0;
             while (gameMode != 1 && gameMode != 2) {
@@ -39,7 +39,6 @@ public class Main {
             } else if (gameMode == 2) {
                 playGameVsComputer(gameBoard); // Spela mot datorn
             }
-
 
             System.out.println("Do you want to play again? (yes/no)");
             String playAgainInput = scanner.next().toLowerCase();
@@ -213,7 +212,6 @@ public class Main {
                     System.out.println("Position taken, pick another.");
                 }
             } while (playerPos2 < 1 || playerPos2 > 9 || isPositionTaken(playerPos2, playerPositions2, playerPositions1));
-
 
             gameBoard.placePiece(playerPos2, "Player 2");
             playerPositions2.add(playerPos2);
