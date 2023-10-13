@@ -4,29 +4,33 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    //Arraylist som lagrar data för spelarens position
+    //Arraylist som lagrar data för spelarens position för checkwinner
     static ArrayList<Integer> playerPositions1 = new ArrayList<Integer>();
     static ArrayList<Integer> playerPositions2 = new ArrayList<Integer>();
     //Räknare för antal drag
     static int totalMoves = 0;
 
+    GameBoard gameBoard = new GameBoard(playerPositions1, playerPositions2);
+
+
     public static void main(String[] args) {
         //Ange sitt namn
         Scanner scanner = new Scanner(System.in);
         boolean playAgain = true; // Variabel för att kontrollera om spelet ska spelas igen
+        GameBoard gameBoard = new GameBoard();
 
         while (playAgain) {
             int gameMode;
 
             do {
-                System.out.println("Choose gamemode:\n1. Play against other player\n2. play against computer");
+                System.out.println("Choose gamemode:\n1. Multiplayer \n2. Play against Computer");
                 gameMode = scanner.nextInt();
             } while (gameMode != 1 && gameMode != 2);
 
             if (gameMode == 1) {
-                playGame(); // Spela mot en annan spelare
+                playGame(gameBoard); // Spela mot en annan spelare
             } else if (gameMode == 2) {
-                playGameVsComputer(); // Spela mot datorn
+                playGameVsComputer(gameBoard); // Spela mot datorn
             }
 
             System.out.println("Do you want to play again? (yes/no)");
@@ -37,8 +41,12 @@ public class Main {
         System.out.println("Thank you for playing! Bye.");
     }
 //Spelläge mot datorn
-    public static void playGameVsComputer() {
+    public static void playGameVsComputer(GameBoard gameBoard) {
         Scanner scanner = new Scanner(System.in);
+
+        String playerWinMessage = "Congratulations %s won!";
+        String computerWinMessage = "Congratulations Computer won!";
+        String drawMessage = "It's a tie! No one won.";
 
             // Rensa positionslistor och återställ antal drag
             playerPositions1.clear();
@@ -52,17 +60,8 @@ public class Main {
 
             System.out.println("Welcome, " + player1.getPlayerName() + " and Computer!");
 
-            // Skapa spelplanen
-            char[][] gameBoard = {
-                    {' ', '|', ' ', '|', ' '},
-                    {'-', '+', '-', '+', '-'},
-                    {' ', '|', ' ', '|', ' '},
-                    {'-', '+', '-', '+', '-'},
-                    {' ', '|', ' ', '|', ' '}
-            };
-
             // Skriv ut spelplanen
-            printGameBoard(gameBoard);
+            gameBoard.printBoard();
 
             boolean gameOver = false;
             boolean player1Turn = true;
@@ -82,7 +81,7 @@ public class Main {
                         }
                     } while (playerPos1 < 1 || playerPos1 > 9 || isPositionTaken(playerPos1, playerPositions1, playerPositions2));
 
-                    placePiece(gameBoard, playerPos1, "Player 1");
+                    gameBoard.placePiece(playerPos1, "Player 1");
                     playerPositions1.add(playerPos1);
                     totalMoves++;
 
@@ -92,37 +91,43 @@ public class Main {
                     System.out.println("Computer´s turn...");
 
                     int computerPos = computer.makeMove(playerPositions1, playerPositions2);
-                    placePiece(gameBoard, computerPos, "Computer");
+                    gameBoard.placePiece(computerPos, "Computer");
                     playerPositions2.add(computerPos);
                     totalMoves++;
                 }
 
-                printGameBoard(gameBoard);
+                gameBoard.printBoard();
                 // Kontrollera om spelaren 1 har vunnit
-                if (checkWinner(playerPositions1).equals("Congratulations Player1 won!")) {
-                    System.out.println("Congratulation, " + playerName + "! You won!");
+                if (checkWinner(playerPositions1).equals("Player1 won!")) {
+                    System.out.println(String.format(playerWinMessage, player1.getPlayerName()));
                     gameOver = true;
+                    gameBoard.clearBoard();
                     break;
                 }
 
                 // Kontrollera om datorn har vunnit
-                if (checkWinner(playerPositions2).equals("Congratulations Player2 won!!")) {
-                    System.out.println("Congratulation Computer, you won!");
+                if (checkWinner(playerPositions2).equals("Player2 won!")) {
+                    System.out.println(computerWinMessage);
                     gameOver = true;
+                    gameBoard.clearBoard();
                 }
 
                 // Kolla om det är oavgjort om ingen har vunnit
                 if (!gameOver && isDraw(totalMoves)) {
-                    System.out.println("Tied! No one won.");
+                    System.out.println(drawMessage);
                     gameOver = true;
+                    gameBoard.clearBoard();
                  }
                 player1Turn = !player1Turn; // Växlar mellan true och false för att byta tur.
             }
     }
 
 
-    public static void playGame() {
+    public static void playGame(GameBoard gameBoard) {
         Scanner scanner = new Scanner(System.in);
+
+        String playerWinMessage = "Congratulations %s won!";
+        String drawMessage = "It's a tie! No one won.";
 
         // Rensa positionslistor och återställ antal drag
         playerPositions1.clear();
@@ -139,16 +144,8 @@ public class Main {
 
         System.out.println("Welcome, " + player1.getPlayerName() + " and " + player2.getPlayerName() + "!");
 
-        //Skapar spelplanen
-        char[][] gameBoard = {
-                {' ', '|', ' ', '|', ' '},
-                {'-', '+', '-', '+', '-'},
-                {' ', '|', ' ', '|', ' '},
-                {'-', '+', '-', '+', '-'},
-                {' ', '|', ' ', '|', ' '}
-        };
         //Skriver ut spelplanen
-        printGameBoard(gameBoard);
+        gameBoard.printBoard();
 
         boolean gameOver = false;
 
@@ -171,23 +168,25 @@ public class Main {
             } while (playerPos1 < 1 || playerPos1 > 9 || isPositionTaken(playerPos1, playerPositions1, playerPositions2));
 
 
-            placePiece(gameBoard, playerPos1, "Player 1");
+            gameBoard.placePiece(playerPos1, "Player 1");
             playerPositions1.add(playerPos1);
             totalMoves++;
 
-            printGameBoard(gameBoard);
+            gameBoard.printBoard();
 
             // Kontrollera om spelaren 1 har vunnit
-            if (checkWinner(playerPositions1).equals("Congratulations Player1 won!")) {
-                System.out.println("Congratulation, " + playerName1 + "! You won!");
+            if (checkWinner(playerPositions1).equals("Player1 won!")) {
+                System.out.println(String.format(playerWinMessage, player1.getPlayerName()));
                 gameOver = true;
+                gameBoard.clearBoard();
                 break;
             }
 
             // Kolla om det är oavgjort
             if (isDraw(totalMoves)) {
-                System.out.println("Tied! No one won.");
+                System.out.println(drawMessage);
                 gameOver = true;
+                gameBoard.clearBoard();
                 // Avsluta spelet om det är oavgjort
                 break;
             }
@@ -206,84 +205,28 @@ public class Main {
             } while (playerPos2 < 1 || playerPos2 > 9 || isPositionTaken(playerPos2, playerPositions2, playerPositions1));
 
 
-            placePiece(gameBoard, playerPos2, "Player 2");
+            gameBoard.placePiece(playerPos2, "Player 2");
             playerPositions2.add(playerPos2);
             totalMoves++;
 
-            printGameBoard(gameBoard);
+            gameBoard.printBoard();
 
             // Kontrollera om spelaren 2 har vunnit
-            if (checkWinner(playerPositions2).equals("Congratulations Player2 won!!")) {
-                System.out.println("Congratulation, " + playerName2 + "! You won!");
+            if (checkWinner(playerPositions2).equals("Player2 won!")) {
+                System.out.println((String.format(playerWinMessage, player2.getPlayerName())));
                 gameOver = true;
+                gameBoard.clearBoard();
             }
             // Kolla om det är oavgjort
             if (isDraw(totalMoves)) {
                 System.out.println("Tied! No one won.");
                 gameOver = true;
+                gameBoard.clearBoard();
                 // Avsluta spelet om det är oavgjort
                 break;
             }
         }
     }
-
-    //deklarera placering och symbol
-    public static void placePiece(char[][] gameBoard, int pos, String user) {
-        char symbol = ' ';
-
-        if (user.equals("Player 1")) {
-            symbol = 'X';
-            playerPositions1.add(pos);
-        } else if (user.equals("Player 2") || user.equals("Computer")) {
-            symbol = 'O';
-            playerPositions2.add(pos);
-        }
-
-        //Switchfunktion för ge rätt position
-        switch (pos) {
-            case 1:
-                gameBoard[0][0] = symbol;
-                break;
-            case 2:
-                gameBoard[0][2] = symbol;
-                break;
-            case 3:
-                gameBoard[0][4] = symbol;
-                break;
-            case 4:
-                gameBoard[2][0] = symbol;
-                break;
-            case 5:
-                gameBoard[2][2] = symbol;
-                break;
-            case 6:
-                gameBoard[2][4] = symbol;
-                break;
-            case 7:
-                gameBoard[4][0] = symbol;
-                break;
-            case 8:
-                gameBoard[4][2] = symbol;
-                break;
-            case 9:
-                gameBoard[4][4] = symbol;
-                break;
-            default:
-                break;
-        }
-
-    }
-
-    //Metod för spelplanen
-    private static void printGameBoard(char[][] gameBoard) {
-        for (char[] row : gameBoard) {
-            for (char c : row) {
-                System.out.print(c);
-            }
-            System.out.println();
-        }
-    }
-
     //deklarera vinstdragen
     public static String checkWinner(List<Integer> playerPositions) {
 
@@ -310,9 +253,9 @@ public class Main {
         //Forloop för vinnare. Går igenom listan för checkwinner
         for (List l : winning) {
             if (playerPositions1.containsAll(l)) {
-                return "Congratulations Player1 won!";
+                return "Player1 won!";
             } else if (playerPositions2.containsAll(l)) {
-                return "Congratulations Player2 won!!";
+                return "Player2 won!";
             } else if (playerPositions.size() + playerPositions2.size() == 9) {
                 return "It´s a tie!";
             }
