@@ -190,7 +190,7 @@ public class Main {
                     }
                 } catch (java.util.InputMismatchException e) {
                     System.out.println("Invalid input. Please enter a valid number.");
-                    scanner.next();  // Clear the invalid input from the scanner
+                    scanner.next();
                 }
             } while (!validInput || playerPos1 < 1 || playerPos1 > 9 || isPositionTaken(playerPos1, playerPositions1, playerPositions2));
 
@@ -234,7 +234,7 @@ public class Main {
                     }
                 } catch (java.util.InputMismatchException e) {
                     System.out.println("Invalid input. Please enter a valid number.");
-                    scan.next();  // Clear the invalid input from the scanner
+                    scan.next();
                 }
             } while (!validInput2 || playerPos2 < 1 || playerPos2 > 9 || isPositionTaken(playerPos2, playerPositions2, playerPositions1));
 
