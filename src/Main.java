@@ -20,12 +20,19 @@ public class Main {
         GameBoard gameBoard = new GameBoard();
 
         while (playAgain) {
-            int gameMode;
-
-            do {
+            int gameMode = 0;
+            while (gameMode != 1 && gameMode != 2) {
                 System.out.println("Choose gamemode:\n1. Multiplayer \n2. Play against Computer");
-                gameMode = scanner.nextInt();
-            } while (gameMode != 1 && gameMode != 2);
+                if (scanner.hasNextInt()) {
+                    gameMode = scanner.nextInt();
+                    if (gameMode != 1 && gameMode != 2) {
+                        System.out.println("Invalid input. Please enter 1 for multiplayer or 2 to play against the computer.");
+                    }
+                } else {
+                    System.out.println("Invalid input. Please enter 1 for multiplayer or 2 to play against the computer.");
+                    scanner.next(); // Rensa inmatningsbufferten för att undvika en oändlig loop
+                }
+            }
 
             if (gameMode == 1) {
                 playGame(gameBoard); // Spela mot en annan spelare
@@ -33,8 +40,10 @@ public class Main {
                 playGameVsComputer(gameBoard); // Spela mot datorn
             }
 
+
             System.out.println("Do you want to play again? (yes/no)");
             String playAgainInput = scanner.next().toLowerCase();
+
             playAgain = playAgainInput.equals("yes");
         }
 
@@ -118,11 +127,12 @@ public class Main {
                     gameOver = true;
                     gameBoard.clearBoard();
                  }
-                player1Turn = !player1Turn; // Växlar mellan true och false för att byta tur.
+                // Växlar mellan true och false för att byta tur.
+                player1Turn = !player1Turn;
             }
     }
 
-
+    //Spelläge multiplayer
     public static void playGame(GameBoard gameBoard) {
         Scanner scanner = new Scanner(System.in);
 
@@ -161,7 +171,7 @@ public class Main {
                 playerPos1 = scan.nextInt();
 
                 if (playerPos1 < 1 || playerPos1 > 9) {
-                    System.out.println("Unavaible input. Picka number between 1-9.");
+                    System.out.println("Unavaible input. Pick a number between 1-9.");
                 } else if (isPositionTaken(playerPos1, playerPositions1, playerPositions2)) {
                     System.out.println("Position taken, pick another.");
                 }
@@ -176,14 +186,14 @@ public class Main {
 
             // Kontrollera om spelaren 1 har vunnit
             if (checkWinner(playerPositions1).equals("Player1 won!")) {
-                System.out.println(String.format(playerWinMessage, player1.getPlayerName()));
+                System.out.println((String.format(playerWinMessage, player1.getPlayerName())));
                 gameOver = true;
                 gameBoard.clearBoard();
                 break;
             }
 
             // Kolla om det är oavgjort
-            if (isDraw(totalMoves)) {
+            if (!gameOver && isDraw(totalMoves)) {
                 System.out.println(drawMessage);
                 gameOver = true;
                 gameBoard.clearBoard();
@@ -217,9 +227,9 @@ public class Main {
                 gameOver = true;
                 gameBoard.clearBoard();
             }
-            // Kolla om det är oavgjort
-            if (isDraw(totalMoves)) {
-                System.out.println("Tied! No one won.");
+            // Kolla om det är oavgjort, men bara om det inte finns någon vinnare ännu
+            if (!gameOver && isDraw(totalMoves)) {
+                System.out.println(drawMessage);
                 gameOver = true;
                 gameBoard.clearBoard();
                 // Avsluta spelet om det är oavgjort

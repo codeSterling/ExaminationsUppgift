@@ -12,7 +12,7 @@ public class GameBoard {
         this.playerPositions1 = playerPositions1;
         this.playerPositions2 = playerPositions2;
     }
-
+    //2D array för spelplan
     public GameBoard() {
         board = new char[][]{
                 {' ', '|', ' ', '|', ' '},
